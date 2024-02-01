@@ -1,0 +1,75 @@
+<style>
+    td,
+    th {
+        border: 3px solid;
+        width: 200px;
+
+        border-color: black;
+    }
+
+    table {
+        border-collapse: collapse;
+        height: 650px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+</style>
+
+<table>
+    <tr>
+        <th>query params</th>
+        <th> url מה הכתובת </th>
+        <th>bodyמה שולחים ב</th>
+        <th>method איזה </th>
+        <th>הסבר</th>
+        <th>מה מחזיר</th>
+        <th>איזה פעולה</th>
+    </tr>
+    <tr>
+        <td>token - ADMIN</td>
+        <td>http://localhost:4000/api/order/all</td>
+        <td>---</td>
+        <td>getAllOrders</td>
+        <td>שליפת כל ההזמנות</td>
+        <td>{_id, userId, orderDate, DueDate, orderAddress, product, onWayProduct[]}
+        </td>
+        <td>get</td>
+    </tr>
+    <tr>
+        <td>token</td>
+        <td>http://localhost:4000/api/order</td>
+        <td>---</td>
+        <td>getAllOrdersByUser</td>
+        <td>שליפת כל ההזמנות של משתמש מסוים</td>
+        <td>{_id, userId, orderDate, DueDate, orderAddress, product, onWayProduct[]}
+        <td>get</td>
+    </tr>
+    <tr>
+        <td>token - ADMIN</td>
+        <td>http://localhost:4000/api/order/id</td>
+        <td>---</td>
+        <td>deleteOrder</td>
+        <td>id מחיקת הזמנה לפי</td>
+        <td>{_id, userId, orderDate, DueDate, orderAddress, product, onWayProduct[]}</td>
+        <td>delete</td>
+    </tr>
+    <tr>
+        <td>token</td>
+        <td>http://localhost:4000/api/order</td>
+        <td>{orderDate, DueDate, orderAddress, product, onWayProduct[]}</td>
+        <td>addOrder</td>
+        <td>הוספת הזמנה</td>
+        <td>{_id, userId, orderDate, DueDate, orderAddress, product, onWayProduct[]}</td>
+        <td>post</td>
+    </tr>
+    <tr>
+        <td>token - ADMIN</td>
+        <td>http://localhost:4000/api/order/id</td>
+        <td>משתנה אוטומטי שההזמנה יצאה לדרך</td>
+        <td>updateOrder</td>
+        <td>עריכת הזמנה</td>
+        <td>{_id, userId, orderDate, DueDate, orderAddress, product, onWayProduct[]}</td>
+        <td>put</td>
+    </tr>
+</table>

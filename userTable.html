@@ -1,0 +1,58 @@
+<style>
+    td,
+    th {
+        border: 3px solid;
+        width: 200px;
+       
+        border-color: black;
+    }
+   
+    table {
+        border-collapse: collapse;
+        height: 650px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+</style>
+
+<table>
+        <tr>                      
+            <th>query params</th>
+            <th> url מה הכתובת </th>
+            <th>bodyמה שולחים ב</th>
+            <th>method איזה </th>            
+            <th>הסבר</th>
+            <th>מה מחזיר</th>
+            <th>איזה פעולה</th>
+        </tr>
+        <tr>
+            <td>token - ADMIN</td>
+            <td>http://localhost:4000/api/user</td>
+            <td>---</td>
+            <td>getAllUsers</td>
+            <td>שליפת כל המשתמשים</td>
+            <td>user[]
+                {_id,userName,email}
+                </td>
+            <td>get</td>
+        </tr>
+        <tr>
+            <td>---</td>
+            <td>http://localhost:4000/api/user</td>
+            <td>{userName,email,password}</td>
+            <td>addUser</td>
+            <td>הוספת משתמש</td>
+            <td>{_id,userName,email,user:hashedpassword}</td>
+            <td>post</td>
+        </tr>
+        <tr>
+            <td>token</td>
+            <td>http://localhost:4000/api/user/login</td>
+            <td>{userName,email,password}</td>
+            <td>login</td>
+            <td>כניסת משתמש</td>
+            <td>{_id,userName,email,user:hashedpassword}</td>
+            <td>post</td>
+        </tr>       
+    </table>
