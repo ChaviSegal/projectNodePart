@@ -18,7 +18,7 @@ export const addUser = async (req, res) => {
         let newUser = new userModel({ email, password: hashedPassword, userName, role: "USER" });
         await newUser.save();
         let token = generateToken(newUser._id, newUser.role, newUser.userName);
-        res.json({ _id: newUser.id, userName: newUser.userName, token, email: newUser.email })
+        res.json({ _id: newUser._id, userName: newUser.userName, token, email: newUser.email })
     }
 
     catch (err) {
@@ -27,29 +27,32 @@ export const addUser = async (req, res) => {
 }
 
 export const login = async (req, res) => {
-    let { email, password } = req.body;
+    let { email, password, userName } = req.body;
 
-    if (!email || !password)
-        return res.status(404).json({ type: "missing parameters", message: "please send email user name and password" })
+    if (!email || !password || !userName)
+        return res.status(404).json({ type: "missing parameters", message: "please send email, user name, and password" });
 
     try {
         const user = await userModel.findOne({ email: email });
         if (!user)
-            return res.status(404).json({ type: "no  user", message: "one or more details are invalid" })
-
+            return res.status(404).json({ type: "no user", message: "user does not exist" });
         if (! await bcrypt.compare(password, user.password))
-            return res.status(404).json({ type: "no  user", message: "user password is invalid" })
+            return res.status(404).json({ type: "user password is incorrect", message: "user password is incorrect" });
+        if (userName !== user.userName)
+            return res.status(404).json({ type: "incorrect user name", message: "user name does not match" });
 
         user.password = "****";
-        let token = generateToken(user._id, user.role, user.userName)
+        let token = generateToken(user._id, user.role, user.userName);
         console.log("hhh");
 
-        return res.json({ _id: user.id, userName: user.userName, token, email: user.email })
+        return res.json({ _id: user._id, userName: user.userName, token, email: user.email, role:user.role });
     }
     catch (err) {
-        res.status(400).json({ type: "invalid operation", message: "cannot sign in user" })
+        res.status(400).json({ type: "invalid operation", message: "cannot sign in user" });
     }
-}
+};
+
+  
 
 export const getAllUsers = async (req, res) => {
 

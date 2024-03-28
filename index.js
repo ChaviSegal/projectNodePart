@@ -27,8 +27,10 @@ const app = express();
 app.use(cors())
 app.use(express.json());
 
+app.use(express.static("pictures"))
 connectToDB();
 config();
+
 
 
 // app.get("/api/all/:name")

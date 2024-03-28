@@ -17,7 +17,8 @@ export const orderSchema = mongoose.Schema({
     orderAdress: String,
     products: [minimalProductSchema],
     ordererId: String,
-    didOrderGoOutAlredy: {type: Boolean, default: "false"}
+    didOrderGoOutAlredy: {type: Boolean, default: "false"},
+    orderAmount: Number
 })
 
 
@@ -30,8 +31,9 @@ export const orderValidator = (_order) => {
         getOrderDate: Joi.date(),
         orderAdress: Joi.string(),
         products: Joi.array(),
-        odererId: Joi.string(),
-        didOrderGoOutAlredy: Joi.boolean()
+        ordererId: Joi.string(),
+        didOrderGoOutAlredy: Joi.boolean(),
+        orderAmount: Joi.number()
     })
     return orderValidationSchema.validate(_order);
 }

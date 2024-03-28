@@ -3,34 +3,30 @@ import mongoose from "mongoose";
 
 
 export const getAllProducts = async (req, res, next) => {
-
     let txt = req.query.txt || undefined;
     let page = req.query.page || 1;
-    let perPage = req.query.perPage || 30;
-    // if(req.xxx)
-
+    let perPage = req.query.perPage || 12; // הערך נקבע להיות 
     try {
-
         let allProducts = await productModel.find({
             $or:
-                [{ productName: txt }, { description: txt }]
-        }).skip((page - 1) * perPage).limit(perPage);
-        //pagination
+                [{ productName: txt }, { description: txt }, { productName: txt }, { category: txt }]
+        }).select('productName descripttion PictureRouting category price ')
+            .skip((page - 1) * perPage).limit(perPage);
         res.json(allProducts)
     }
-
     catch (err) {
         res.status(400).json({ type: "invalid operation", message: "sorry cannot get products" })
     }
 }
 
+
 export const getProductById = async (req, res) => {
     let { id } = req.params;
-
     try {
         if (!mongoose.isValidObjectId(id)) {
-            res.status(400);
-            throw new Error('קוד לא הגיוני')
+            return res.status(400).json({ type: "no id", messege: "error" })
+            //     res.status(400);
+            //     throw new Error('קוד לא הגיוני')
         }
         // return res.status(400).json({ type: "not valid id", message: "id not in right format" })
 
@@ -77,32 +73,22 @@ export const deleteProduct = async (req, res) => {
 }
 
 export const addProduct = async (req, res) => {
-    let { productName, descripttion, ManufacturingDate, PictureRouting, domain, id } = req.body;
+    let { _id, productName, descripttion, ManufacturingDate, PictureRouting, domain, category, compani, price } = req.body;
 
-    if (!descripttion)
-        return res.status(404).json({ type: "missing params", message: "missing details in body: name " })
+    if (!productName)
+        return res.status(404).json({ type: "missing params", message: "missing details: id or productName or supplierId" })
 
-    const result = await productValidator(req.body);
-    console.log(result)
-    if (result.errors)
-        return res.status(400).json({ type: " invalid data", message: result.errors.details[0].message })
-
+    const errors = await productValidator(req.body);
+    console.log(errors)
     try {
-        let sameProduct = await productModel.findOne({ descripttion: descripttion });
+
+        let sameProduct = await productModel.findOne({ _id: _id });
         if (sameProduct)
             return res.status(409).json({ type: "same details", message: "there is already same product" })
-
-        // if (req.user.role != "ADMIN")
-        //     res.status(403).json({ type: "you are not allowed", message: "you are not allowed to add a product" })
-
-        let newProduct = new productModel({
-            productName, descripttion, ManufacturingDate, PictureRouting, domain,
-            userId: req.user._id
-        });
+        let newProduct = new productModel({ userId: req.user._id, productName, descripttion, ManufacturingDate, PictureRouting, domain, category, compani, price });
         await newProduct.save();
         return res.json(newProduct)
     }
-
     catch (err) {
         console.log(err)
         res.status(400).json({ type: "invalid operation", message: "sorry cannot get product" })
@@ -148,3 +134,43 @@ export const updateProduct = async (req, res) => {
         res.status(400).json({ type: "invalid operation", message: "sorry cannot get product" })
     }
 }
+
+export const getProductByCategory = async (req, res) => {
+    let page = req.query.page || 1;
+    let perPage = req.query.perPage || 30;
+    let { category } = req.params;
+
+    try {
+        let product = await productModel
+            .find({ category: category })
+            .skip((page - 1) * perPage)
+            .limit(perPage);
+
+        if (!product || product.length === 0) {
+            return res.status(404).json({
+                type: "not found",
+                message: "No product with such description",
+            });
+        }
+
+        return res.json(product);
+    } catch (err) {
+        console.log(err);
+        res.status(400).json({
+            type: "invalid operation",
+            message: "Sorry, cannot get product",
+        });
+    }
+};
+
+export const countProducts = async (req, res) => {
+    let { category } = req.params;
+    try {
+      let products = await productModel.find({ category: category });
+      let cnt = products.length; // Get the number of objects in the collection
+      res.json({ count: cnt });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({ message: "Error counting products" });
+    }
+  };
